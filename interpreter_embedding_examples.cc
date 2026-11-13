@@ -75,7 +75,7 @@ int main() {
 
         sys.attr("path").cast<py::list>().append(PROJECT_SOURCE_DIR);
         py::print("Updated Python path:", sys.attr("path"), "flush"_a = true);
-        py::module_ algorithm = py::module_::import("python.algorithm");
+        py::module_ algorithm = py::module_::import("src.python.algorithm");
         auto result = algorithm.attr("add")(2, 3).cast<int>();
         std::cout << "Result of python.algorithm.add(2, 3): " << result
                   << std::endl;
@@ -86,7 +86,7 @@ int main() {
         std::cout << "Result of fast_cal.add(5, 6): " << fast_result
                   << std::endl;
 
-        auto py_module = py::module_::import("py_module");
+        auto py_module = py::module_::import("src.python.py_module");
         auto a = py_module.attr("a").cast<int>();
         auto b = py_module.attr("b").cast<int>();
         std::cout << "py_module.a: " << a << std::endl;
