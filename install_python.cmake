@@ -31,6 +31,24 @@ if(UV_EXECUTABLE)
         COMMAND_ERROR_IS_FATAL ANY
     )
     message(STATUS "Python is installed on ${Python_INSTALL_DIR}")
+
+    if(CMAKE_HOST_WIN32)
+        set(UV_PYTHON_EXECUTABLE "${Python_ROOT_DIR}/python.exe")
+    else()
+        set(UV_PYTHON_EXECUTABLE "${Python_ROOT_DIR}/bin/python3")
+    endif()
+
+    message(STATUS "Installing python dependencies...")
+    execute_process(
+        COMMAND "${CMAKE_COMMAND}" -E env
+            "UV_PROJECT_ENVIRONMENT=${Python_ROOT_DIR}"
+            "${UV_EXECUTABLE}" sync
+            --locked
+            --python "${UV_PYTHON_EXECUTABLE}"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
+    message(STATUS "Completed installing python dependencies.")
 else()
     message(FATAL_ERROR "uv not found!!!\n"
         "Please install uv from https://docs.astral.sh/uv/getting-started/installation/"
