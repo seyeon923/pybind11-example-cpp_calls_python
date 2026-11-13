@@ -7,6 +7,10 @@
 #include <pybind11/embed.h>
 #include <pybind11/subinterpreter.h>
 
+#ifndef PROJECT_SOURCE_DIR
+#    define PROJECT_SOURCE_DIR ""
+#endif
+
 namespace py = pybind11;
 using namespace pybind11::literals;
 
@@ -69,9 +73,9 @@ int main() {
                   "flush"_a = true);
         py::print("Python path:", sys.attr("path"), "flush"_a = true);
 
-        sys.attr("path").cast<py::list>().append("python");
+        sys.attr("path").cast<py::list>().append(PROJECT_SOURCE_DIR);
         py::print("Updated Python path:", sys.attr("path"), "flush"_a = true);
-        py::module_ algorithm = py::module_::import("algorithm");
+        py::module_ algorithm = py::module_::import("python.algorithm");
         auto result = algorithm.attr("add")(2, 3).cast<int>();
         std::cout << "Result of python.algorithm.add(2, 3): " << result
                   << std::endl;
