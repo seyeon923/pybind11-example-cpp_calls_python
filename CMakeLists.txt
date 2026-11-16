@@ -22,3 +22,9 @@ target_link_libraries(interpreter_embedding_examples PRIVATE pybind11::embed)
 target_compile_definitions(interpreter_embedding_examples
     PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
 )
+
+add_executable(check_3rd_parties src/cpp/check_3rd_parties.cc)
+target_link_libraries(check_3rd_parties PRIVATE pybind11::embed)
+target_compile_definitions(check_3rd_parties
+    PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+)

@@ -48,7 +48,23 @@ if(UV_EXECUTABLE)
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
         COMMAND_ERROR_IS_FATAL ANY
     )
+
     message(STATUS "Completed installing python dependencies.")
+
+    if(WIN32)
+        file(GLOB python_dll_files
+            LIST_DIRECTORIES false
+            "${Python_ROOT_DIR}/*.dll"
+        )
+        install(PROGRAMS ${python_dll_files} DESTINATION bin)
+        install(DIRECTORY "${Python_ROOT_DIR}/DLLs" DESTINATION bin)
+        install(DIRECTORY "${Python_ROOT_DIR}/Lib" DESTINATION bin)
+        install(DIRECTORY "${Python_ROOT_DIR}/tcl" DESTINATION bin)
+        install(FILES "${Python_ROOT_DIR}/LICENSE.txt"
+            DESTINATION licenses
+            RENAME "Python.txt"
+        )
+    endif()
 else()
     message(FATAL_ERROR "uv not found!!!\n"
         "Please install uv from https://docs.astral.sh/uv/getting-started/installation/"
