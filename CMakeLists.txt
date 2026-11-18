@@ -5,6 +5,25 @@ project(pybind11_example_cpp_calls_python)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
+set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
+set(msvc_c "$<COMPILE_LANG_AND_ID:C,MSVC>")
+
+# compiler warning options
+add_compile_options(
+    "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Wextra;-Wshadow;-Wformat=2;-Wunused>>"
+    "$<${msvc_cxx}:$<BUILD_INTERFACE:/W4>>")
+
+# MSVC /permissive- compile option
+add_compile_options(
+    "$<${msvc_cxx}:$<BUILD_INTERFACE:/permissive->>")
+
+# MSVC utf-8 option
+add_compile_options(
+    "$<${msvc_cxx}:$<BUILD_INTERFACE:/utf-8>>"
+    "$<${msvc_c}:$<BUILD_INTERFACE:/utf-8>>"
+)
+
 set(PYTHON_VERSION 3.12 CACHE STRING
     "Python version to install"
 )
@@ -23,8 +42,6 @@ target_compile_definitions(interpreter_embedding_examples
     PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
-add_executable(check_3rd_parties src/cpp/check_3rd_parties.cc)
-target_link_libraries(check_3rd_parties PRIVATE pybind11::embed)
-target_compile_definitions(check_3rd_parties
-    PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
-)
+add_executable(type_conversion_examples src/cpp/type_conversion_examples.cc)
+target_include_directories(type_conversion_examples PRIVATE extern/eigen)
+target_link_libraries(type_conversion_examples PRIVATE pybind11::embed)
