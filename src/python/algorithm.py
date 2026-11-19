@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def check_3rd_parties():
     try:
         import cv2
@@ -18,6 +21,21 @@ def check_3rd_parties():
         return True
     except ImportError:
         return False
+
+
+def pass_array(arr: np.ndarray):
+    print("\n------ In Python pass_numpy_array ------")
+    print("Passed array:")
+    print(arr)
+    print(f"    shape: {arr.shape}, dtype: {arr.dtype}")
+    print("Flags:\n")
+    print(arr.flags)
+
+    arr *= 2
+    print("Doubled the passed array!")
+    print(f"Array after doubling:\n{arr}")
+
+    print("----------------------------------------\n")
 
 
 def add(i, j):

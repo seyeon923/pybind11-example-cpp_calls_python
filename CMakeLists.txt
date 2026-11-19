@@ -29,6 +29,7 @@ set(PYTHON_VERSION 3.12 CACHE STRING
 )
 include(install_python.cmake)
 
+find_package(OpenCV REQUIRED)
 find_package(Python ${PYTHON_VERSION} REQUIRED EXACT COMPONENTS Interpreter Development)
 add_subdirectory(extern/pybind11)
 
@@ -45,3 +46,12 @@ target_compile_definitions(interpreter_embedding_examples
 add_executable(type_conversion_examples src/cpp/type_conversion_examples.cc)
 target_include_directories(type_conversion_examples PRIVATE extern/eigen)
 target_link_libraries(type_conversion_examples PRIVATE pybind11::embed)
+
+add_executable(check_array_pass src/cpp/check_array_pass.cc)
+target_compile_definitions(check_array_pass
+    PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+)
+target_link_libraries(check_array_pass 
+    PRIVATE ${OpenCV_LIBS}
+    PRIVATE pybind11::embed
+)

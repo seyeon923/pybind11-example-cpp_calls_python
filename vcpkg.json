@@ -1,0 +1,4 @@
+{
+  "dependencies": ["opencv"],
+  "builtin-baseline": "13469e2db27bc32ad3e31d908805b92e4027c2e5"
+}
