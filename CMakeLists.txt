@@ -35,6 +35,28 @@ add_subdirectory(extern/pybind11)
 
 pybind11_add_module(example src/cpp/example_module.cc)
 
+set(PY_MODULES_DIR "${CMAKE_CURRENT_BINARY_DIR}/py_modules")
+set(ALGORITHM_PY_HEADER "${PY_MODULES_DIR}/algorithm_py.h")
+set(ALGORITHM_PY_SOURCE "${PY_MODULES_DIR}/algorithm_py.cc")
+
+add_custom_command(
+    OUTPUT 
+        "${ALGORITHM_PY_HEADER}"
+        "${ALGORITHM_PY_SOURCE}"
+    
+    COMMAND ${UV_EXECUTABLE} run python 
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/python/file_to_header.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/python/algorithm.py"
+        -o "${PY_MODULES_DIR}" -f
+        --output-name algorithm_py
+
+    DEPENDS 
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/python/file_to_header.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/python/algorithm.py"
+
+    VERBATIM
+)
+
 add_executable(interpreter_embedding_examples 
     src/cpp/interpreter_embedding_examples.cc
 )
@@ -47,10 +69,12 @@ add_executable(type_conversion_examples src/cpp/type_conversion_examples.cc)
 target_include_directories(type_conversion_examples PRIVATE extern/eigen)
 target_link_libraries(type_conversion_examples PRIVATE pybind11::embed)
 
-add_executable(check_array_pass src/cpp/check_array_pass.cc)
-target_compile_definitions(check_array_pass
-    PRIVATE PROJECT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+add_executable(check_array_pass 
+    src/cpp/check_array_pass.cc
+    ${ALGORITHM_PY_SOURCE}
+    ${ALGORITHM_PY_HEADER}
 )
+target_include_directories(check_array_pass PRIVATE ${PY_MODULES_DIR})
 target_link_libraries(check_array_pass 
     PRIVATE ${OpenCV_LIBS}
     PRIVATE pybind11::embed

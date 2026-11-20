@@ -1,13 +1,12 @@
 #include <iostream>
+#include <string_view>
 
 #include <opencv2/opencv.hpp>
 
 #include <pybind11/embed.h>
 #include <pybind11/numpy.h>
 
-#ifndef PROJECT_SOURCE_DIR
-#    define PROJECT_SOURCE_DIR ""
-#endif
+#include "algorithm_py.h"
 
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -21,9 +20,8 @@ int main() {
     py::scoped_interpreter guard{};
 
     try {
-        py::module_ sys = py::module_::import("sys");
-        sys.attr("path").attr("insert")(0, PROJECT_SOURCE_DIR);
-        py::module_ algorithm = py::module_::import("src.python.algorithm");
+        py::exec(std::string_view(reinterpret_cast<const char*>(ALGORITHM_PY),
+                                  ALGORITHM_PY_SIZE));
 
         py::array_t<double> arr(
             {mat.rows, mat.cols}, mat.ptr<double>(),
@@ -32,7 +30,7 @@ int main() {
         std::cout << "mat after data[0] modification:\n" << mat << std::endl;
         py::print("arr after data[0] modification:\n", arr, "flush"_a = true);
 
-        algorithm.attr("pass_array")(arr);
+        py::globals()["pass_array"](arr);
 
         std::cout << "mat after passing to Python:\n"
                   << mat << '\n'

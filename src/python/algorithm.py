@@ -40,7 +40,3 @@ def pass_array(arr: np.ndarray):
 
 def add(i, j):
     return i + j
-
-
-if __name__ == "__main__":
-    check_3rd_parties()
