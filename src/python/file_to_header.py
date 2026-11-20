@@ -113,7 +113,7 @@ if __name__ == "__main__":
     bytes_per_line = args.bytes_per_line
 
     if output_name is None:
-        output_name = input_file_path.stem
+        output_name = input_file_path.stem + "_" + input_file_path.suffix.lstrip(".")
 
     output_header_path = output_dir / (output_name + ".h")
     output_source_path = output_dir / (output_name + ".cc")
